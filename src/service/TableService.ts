@@ -50,12 +50,31 @@ const TableService = {
       throw new AppError(ErrorCode.NOT_FOUND, `Table not found for table number(s): ${notFound.join(", ")}`)
     }
 
+    const stationNums = request.map(r => r.stationNum).filter((n): n is number => n !== undefined)
+
+    const stationMap = new Map<number, Types.ObjectId>()
+
+    if (stationNums.length > 0) {
+      const stations = await StationRepository.findByStationNums(stationNums)
+
+      if (stations.length !== new Set(stationNums).size) {
+        const existedNums = new Set(stations.map(s => s.stationNum))
+        const notFound = stationNums.filter(n => !existedNums.has(n))
+
+        throw new AppError(ErrorCode.NOT_EXIST, `Station not found or inactive: ${notFound.join(", ")}`)
+      }
+
+      stations.forEach(s => stationMap.set(s.stationNum, s._id))
+    }
+
     const bulkOps = request.map(item => ({
       updateOne: {
         filter: { tableNum: item.tableNum },
         update: {
           $set: {
-            ...(item.stationNum !== undefined && { stationNum: item.stationNum }),
+            ...(item.stationNum !== undefined && {
+              station: stationMap.get(item.stationNum),
+            }),
             ...(item.isActive !== undefined && { isActive: item.isActive }),
           },
         },
@@ -64,7 +83,6 @@ const TableService = {
 
     return await Table.bulkWrite(bulkOps)
   },
-
   getAllTables: async () => await TableRepository.findAll(),
 }
 
