@@ -1,18 +1,12 @@
 import z from "zod"
-import { ObjectIdSchema } from "./CommonSchema"
 
 //* CREATE
-export const CreateTableRequest = z.object({
-  tableNum: z.number().min(1, "Table number is required"),
-  stationNum: z.number().min(1, "Station number is required"),
-})
+export const CreateTableRequest = z.object({ tableNum: z.number().min(1, "Table number is required") })
 export type CreateTableRequest = z.infer<typeof CreateTableRequest>
 
 //* UPDATE
 export const UpdateTableRequest = z.object({
-  id: ObjectIdSchema,
   tableNum: z.number().min(1, "Table number is required"),
-  stationNum: z.number().min(1, "Station number is required"),
   tableStatus: z.string().optional(),
   isCompleted: z.boolean().optional(),
 })
