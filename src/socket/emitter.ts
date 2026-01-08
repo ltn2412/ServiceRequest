@@ -1,3 +1,4 @@
+import { appLoggerSocket } from "@/common/Logger"
 import { Server } from "socket.io"
 
 let io: Server | null = null
@@ -11,6 +12,8 @@ export function emitSocket<T>(event: SocketEvent, payload: T): void {
     console.warn(`[SocketEmitter] IO not initialized, skip emit ${event}`)
     return
   }
+
+  appLoggerSocket(`Emitting socket event: ${event}`)
 
   io.emit(event, payload)
 }

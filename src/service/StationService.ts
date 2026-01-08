@@ -13,14 +13,23 @@ const StationService = {
   },
 
   updateStation: async (request: UpdateStation) => {
-    const existingStation = await StationRepository.findByStationNum(request.stationNum)
-    if (!existingStation) throw new AppError(ErrorCode.NOT_EXIST, `Station ${request.stationNum} does not exist`)
+    const { stationNum, stationName, isActive } = request
 
-    Object.assign(existingStation, request)
+    const updated = await Station.findOneAndUpdate(
+      { stationNum: stationNum },
+      {
+        $set: {
+          ...(stationName !== undefined && { stationName }),
+          ...(isActive !== undefined && { isActive }),
+        },
+      },
+      { new: true }
+    )
 
-    return await existingStation.save()
+    if (!updated) throw new AppError(ErrorCode.NOT_FOUND, `Station ${request.stationNum} does not exist`)
+
+    return updated
   },
-
   getAllStations: async () => await StationRepository.findAll(),
 }
 
