@@ -7,10 +7,10 @@ export function initSocket(server: HttpServer): SocketIOServer {
     cors: { origin: "*" },
   })
 
+  setSocketIO(io)
+
   io.on("connection", (socket: Socket) => {
     console.log("Socket connected:", socket.id)
-
-    setSocketIO(io)
 
     socket.on("disconnect", () => console.log("Socket disconnected:", socket.id))
   })
