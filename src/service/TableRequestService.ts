@@ -5,6 +5,7 @@ import TableRequest from "@/model/TableRequest"
 import StationRepository from "@/respository/StationRepository"
 import TableRepository from "@/respository/TableRepository"
 import TableRequestRepository from "@/respository/TableRequestRepository"
+import { Types } from "mongoose"
 
 const TableRequestService = {
   getAllTableRequests: async () => await TableRequestRepository.findAll(),
@@ -18,7 +19,7 @@ const TableRequestService = {
 
     if (!tables[0].isActive) throw new AppError(ErrorCode.INACTIVE, `Table ${tableNum} inactive`)
 
-    const station = await StationRepository.findById(tables[0].station.id())
+    const station = await StationRepository.findById(tables[0].station as Types.ObjectId)
 
     if (!station) throw new AppError(ErrorCode.NOT_FOUND, `Station for table ${tableNum} not found`)
 
@@ -51,7 +52,7 @@ const TableRequestService = {
 
     if (!tables[0].isActive) throw new AppError(ErrorCode.INACTIVE, `Table ${tableNum} inactive`)
 
-    const station = await StationRepository.findById(tables[0].station.id())
+    const station = await StationRepository.findById(tables[0].station as Types.ObjectId)
 
     if (!station) throw new AppError(ErrorCode.NOT_FOUND, `Station for table ${tableNum} not found`)
 
