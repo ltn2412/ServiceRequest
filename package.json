@@ -7,7 +7,7 @@
     "dev": "bun --watch src/index.ts",
     "start": "bun run src/index.ts",
     "swagger": "ts-node src/swagger.ts",
-   "pm2": "pm2 start src/index.ts --interpreter C:\\\\Users\\\\Administrator\\\\.bun\\\\bin\\\\bun.exe --name orderX",
+    "pm2": "pm2 start src/index.ts --interpreter C:\\\\Users\\\\Administrator\\\\.bun\\\\bin\\\\bun.exe --name serviceRequest",
     "logs": "pm2 logs orderX",
     "restart": "pm2 restart orderX",
     "stop": "pm2 stop orderX"
