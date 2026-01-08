@@ -1,0 +1,48 @@
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Environment variables
+.env
+.env.*.local
+
+# Logs
+logs/
+*.log
+*.log.*
+log.txt
+
+# OS-specific
+.DS_Store
+Thumbs.db
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+
+# Testing
+coverage/
+.nyc_output/
+
+# Build
+dist/
+build/
+tmp/
+temp/
+
+# TypeScript
+*.tsbuildinfo
+
+# PM2 logs
+pids/
+*.pid
+*.seed
+
+# Misc
+*.tgz
+*.bak
+*.old
