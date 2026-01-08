@@ -11,7 +11,7 @@ const TableService = {
     const tableNums = request.map(r => r.tableNum)
     const stationNums = request.map(r => r.stationNum)
 
-    const existedTables = await TableRepository.findActiveByTableNums(tableNums)
+    const existedTables = await TableRepository.findByTableNums(tableNums)
     if (existedTables.length > 0) {
       const existedNums = existedTables.map(t => t.tableNum).join(", ")
       throw new AppError(ErrorCode.EXIST, `Table already exists for table number(s): ${existedNums}`)
@@ -19,12 +19,15 @@ const TableService = {
 
     const stations = await StationRepository.findByStationNums(stationNums)
 
-    if (stations.length !== new Set(stationNums).size) {
-      const existedNums = new Set(stations.map(s => s.stationNum))
-      const notFound = stationNums.filter(n => !existedNums.has(n))
+    const stationNumSet = new Set(stationNums)
+    const foundNumSet = new Set(stations.map(s => s.stationNum))
 
-      throw new AppError(ErrorCode.NOT_EXIST, `Station not found or inactive: ${notFound.join(", ")}`)
-    }
+    const notFound = [...stationNumSet].filter(n => !foundNumSet.has(n))
+    if (notFound.length > 0) throw new AppError(ErrorCode.NOT_FOUND, `Station not found: ${notFound.join(", ")}`)
+
+    const inactive = stations.filter(s => !s.isActive).map(s => s.stationNum)
+
+    if (inactive.length > 0) throw new AppError(ErrorCode.INACTIVE, `Station inactive: ${inactive.join(", ")}`)
 
     const stationMap = new Map<number, Types.ObjectId>()
     stations.forEach(s => stationMap.set(s.stationNum, s._id))
@@ -41,14 +44,12 @@ const TableService = {
   updateTables: async (request: UpdateListTable) => {
     const tableNums = request.map(r => r.tableNum)
 
-    const existedTables = await TableRepository.findActiveByTableNums(tableNums)
+    const existedTables = await TableRepository.findByTableNums(tableNums)
 
-    if (existedTables.length !== tableNums.length) {
-      const existedNums = new Set(existedTables.map(e => e.tableNum))
-      const notFound = tableNums.filter(n => !existedNums.has(n))
+    const existedNumSet = new Set(existedTables.map(e => e.tableNum))
+    const notFoundTables = tableNums.filter(n => !existedNumSet.has(n))
 
-      throw new AppError(ErrorCode.NOT_FOUND, `Table not found for table number(s): ${notFound.join(", ")}`)
-    }
+    if (notFoundTables.length > 0) throw new AppError(ErrorCode.NOT_FOUND, `Table not found: ${notFoundTables.join(", ")}`)
 
     const stationNums = request.map(r => r.stationNum).filter((n): n is number => n !== undefined)
 
@@ -57,12 +58,15 @@ const TableService = {
     if (stationNums.length > 0) {
       const stations = await StationRepository.findByStationNums(stationNums)
 
-      if (stations.length !== new Set(stationNums).size) {
-        const existedNums = new Set(stations.map(s => s.stationNum))
-        const notFound = stationNums.filter(n => !existedNums.has(n))
+      const reqSet = new Set(stationNums)
+      const foundSet = new Set(stations.map(s => s.stationNum))
 
-        throw new AppError(ErrorCode.NOT_EXIST, `Station not found or inactive: ${notFound.join(", ")}`)
-      }
+      const notFound = [...reqSet].filter(n => !foundSet.has(n))
+      if (notFound.length > 0) throw new AppError(ErrorCode.NOT_FOUND, `Station not found: ${notFound.join(", ")}`)
+
+      const inactive = stations.filter(s => !s.isActive).map(s => s.stationNum)
+
+      if (inactive.length > 0) throw new AppError(ErrorCode.INACTIVE, `Station inactive: ${inactive.join(", ")}`)
 
       stations.forEach(s => stationMap.set(s.stationNum, s._id))
     }
@@ -83,6 +87,7 @@ const TableService = {
 
     return await Table.bulkWrite(bulkOps)
   },
+
   getAllTables: async () => await TableRepository.findAll(),
 }
 

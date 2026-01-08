@@ -19,6 +19,7 @@ export enum ErrorCode {
   SHIFT_NOT_OPEN,
   EMPLOYEE_SHIFT_NOT_OPEN,
   ALREADY_CLOCKED_IN,
+  INACTIVE,
 }
 
 export const ErrorCodeResponse: Record<ErrorCode, { Code: number; Message: string; HttpCode: number }> = {
@@ -42,4 +43,5 @@ export const ErrorCodeResponse: Record<ErrorCode, { Code: number; Message: strin
   [ErrorCode.SHIFT_NOT_OPEN]: { Code: 116, Message: "Shift is not open", HttpCode: 400 },
   [ErrorCode.EMPLOYEE_SHIFT_NOT_OPEN]: { Code: 117, Message: "Employee shift is not open", HttpCode: 400 },
   [ErrorCode.ALREADY_CLOCKED_IN]: { Code: 118, Message: "Employee is already clocked in", HttpCode: 400 },
+  [ErrorCode.INACTIVE]: { Code: 119, Message: "Inactive", HttpCode: 400 },
 }

@@ -11,12 +11,13 @@ const TableRequestService = {
   createTableRequest: async (request: CreateTableRequest) => {
     const { tableNum } = request
 
-    const activeTable = await TableRepository.findActiveByTableNums([tableNum])
-    if (activeTable.length === 0) throw new AppError(ErrorCode.NOT_EXIST, `Table ${tableNum} not active or not found`)
+    const table = await TableRepository.findByTableNums([tableNum])
+    if (table.length === 0) throw new AppError(ErrorCode.NOT_EXIST, `Table ${tableNum} not found`)
+    if (table[0].isActive === false) throw new AppError(ErrorCode.NOT_EXIST, `Table ${tableNum} not active or not found`)
 
     const existedRequest = await TableRequestRepository.findNotCompletedByTableNum(tableNum)
 
-    if (existedRequest.length > 0) throw new AppError(ErrorCode.EXIST, `Table request already exists (not completed) for table ${tableNum}`)
+    if (existedRequest.length > 0) throw new AppError(ErrorCode.EXIST, `Table request already exists for table ${tableNum}`)
 
     await TableRequest.create({
       tableNum: request.tableNum,
@@ -30,7 +31,7 @@ const TableRequestService = {
 
     const existed = await TableRequestRepository.findNotCompletedByTableNum(tableNum)
 
-    if (existed.length === 0) throw new AppError(ErrorCode.NOT_FOUND, `Active table request not found for table ${tableNum}`)
+    if (existed.length === 0) throw new AppError(ErrorCode.NOT_FOUND, `Table request not found for table ${tableNum}`)
 
     await TableRequest.updateOne(
       {

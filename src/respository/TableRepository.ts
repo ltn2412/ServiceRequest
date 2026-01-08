@@ -1,7 +1,7 @@
 import Table from "@/model/Table"
 
 export const TableRepository = {
-  findActiveByTableNums: async (tableNums: number[]) => {
+  findByTableNums: async (tableNums: number[]) => {
     return Table.find({
       tableNum: { $in: tableNums },
     })

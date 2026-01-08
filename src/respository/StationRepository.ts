@@ -9,7 +9,6 @@ export const StationRepository = {
   findByStationNums: (stationNums: number[]) => {
     return Station.find({
       stationNum: { $in: stationNums },
-      isActive: true,
     })
   },
 
