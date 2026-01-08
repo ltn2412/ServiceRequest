@@ -1,5 +1,5 @@
 import { SuccessResponse, ValidationErrorResponse } from "@/common/APIResponse"
-import { CreateStation } from "@/dto/StationDTO"
+import { CreateStation, UpdateStation } from "@/dto/StationDTO"
 import StationService from "@/service/StationService"
 import { Request, Response, Router } from "express"
 
@@ -12,7 +12,7 @@ const Controller = {
   },
 
   updateStation: async (req: Request, res: Response) => {
-    const parsed = CreateStation.safeParse(req.body)
+    const parsed = UpdateStation.safeParse(req.body)
     if (!parsed.success) return ValidationErrorResponse(res, parsed.error)
 
     SuccessResponse(res, await StationService.updateStation(parsed.data))

@@ -12,3 +12,10 @@ export const UpdateTableRequest = z.object({
   isCompleted: z.boolean().optional(),
 })
 export type UpdateTableRequest = z.infer<typeof UpdateTableRequest>
+
+//* UPDATE STATION
+export const UpdateTableRequestStation = z.object({
+  tableNum: z.number().min(1, "Table number is required"),
+  stationNum: z.number().min(1, "Station number is required"),
+})
+export type UpdateTableRequestStation = z.infer<typeof UpdateTableRequestStation>

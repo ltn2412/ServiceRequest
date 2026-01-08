@@ -1,5 +1,4 @@
 import z from "zod"
-import { ObjectIdSchema } from "./CommonSchema"
 
 //* CREATE
 export const CreateTable = z.object({
@@ -13,9 +12,8 @@ export type CreateListTable = z.infer<typeof CreateListTable>
 
 //* UPDATE
 export const UpdateTable = z.object({
-  id: ObjectIdSchema,
   tableNum: z.number().min(1, "Table number is required"),
-  stationNum: z.number().min(1, "Station number is required"),
+  stationNum: z.number().optional(),
   isActive: z.boolean().optional(),
 })
 

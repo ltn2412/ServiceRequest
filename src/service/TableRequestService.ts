@@ -1,6 +1,6 @@
 import { AppError } from "@/common/AppError"
 import { ErrorCode } from "@/common/ErrorCode"
-import { CreateTableRequest, UpdateTableRequest } from "@/dto/TableRequestDTO"
+import { CreateTableRequest, UpdateTableRequest, UpdateTableRequestStation } from "@/dto/TableRequestDTO"
 import TableRequest from "@/model/TableRequest"
 import StationRepository from "@/respository/StationRepository"
 import TableRepository from "@/respository/TableRepository"
@@ -80,6 +80,25 @@ const TableRequestService = {
       },
       { new: true }
     )
+
+    return updated
+  },
+
+  updateTableRequestStation: async (request: UpdateTableRequestStation) => {
+    const { tableNum, stationNum } = request
+
+    const updated = await TableRequest.findOneAndUpdate(
+      {
+        tableNum,
+        isCompleted: false,
+      },
+      {
+        $set: { stationNum },
+      },
+      { new: true }
+    )
+
+    if (!updated) throw new AppError(ErrorCode.NOT_FOUND, `Active table request not found for table ${tableNum}`)
 
     return updated
   },
