@@ -18,7 +18,7 @@ export interface ITableRequest extends Document {
 
 const tableRequestSchema = new Schema<ITableRequest>(
   {
-    tableNum: { type: Number, required: true, unique: true },
+    tableNum: { type: Number, required: true },
     stationNum: { type: Number, required: true },
     tableStatus: { type: String, enum: Object.values(TableStatus), default: TableStatus.NONE },
     isCompleted: { type: Boolean, default: false },
