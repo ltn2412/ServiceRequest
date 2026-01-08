@@ -19,7 +19,7 @@ const TableRequestService = {
 
     if (existedRequest.length > 0) throw new AppError(ErrorCode.EXIST, `Table request already exists for table ${tableNum}`)
 
-    await TableRequest.create({
+    return await TableRequest.create({
       tableNum: request.tableNum,
       stationNum: request.stationNum,
       isCompleted: false,
@@ -33,7 +33,7 @@ const TableRequestService = {
 
     if (existed.length === 0) throw new AppError(ErrorCode.NOT_FOUND, `Table request not found for table ${tableNum}`)
 
-    await TableRequest.updateOne(
+    return await TableRequest.updateOne(
       {
         tableNum,
         isCompleted: false,

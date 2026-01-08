@@ -5,7 +5,7 @@ import { emitSocket, SocketEvent } from "@/socket/emitter"
 import { Request, Response, Router } from "express"
 
 const Controller = {
-  CreateTableRequest: async (req: Request, res: Response) => {
+  createTableRequest: async (req: Request, res: Response) => {
     const parsed = CreateTableRequest.safeParse(req.body)
     if (!parsed.success) return ValidationErrorResponse(res, parsed.error)
 
@@ -29,6 +29,6 @@ const Controller = {
 }
 
 export const TableRequestController = Router()
-TableRequestController.post("/", Controller.CreateTableRequest)
+TableRequestController.post("/", Controller.createTableRequest)
 TableRequestController.put("/", Controller.updateTableRequest)
 TableRequestController.get("/", Controller.getAllTableRequests)

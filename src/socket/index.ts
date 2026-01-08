@@ -1,6 +1,5 @@
 import { Server as HttpServer } from "http"
-import { Server as SocketIOServer, Socket } from "socket.io"
-import { registerTableSocket } from "./table.socket"
+import { Socket, Server as SocketIOServer } from "socket.io"
 
 export function initSocket(server: HttpServer): SocketIOServer {
   const io = new SocketIOServer(server, {
@@ -8,11 +7,9 @@ export function initSocket(server: HttpServer): SocketIOServer {
   })
 
   io.on("connection", (socket: Socket) => {
-    console.log("🔌 Socket connected:", socket.id)
+    console.log("Socket connected:", socket.id)
 
-    registerTableSocket(io, socket)
-
-    socket.on("disconnect", () => console.log("❌ Socket disconnected:", socket.id))
+    socket.on("disconnect", () => console.log("Socket disconnected:", socket.id))
   })
 
   return io

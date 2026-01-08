@@ -16,7 +16,6 @@ export function emitSocket<T>(event: SocketEvent, payload: T): void {
 }
 
 export enum SocketEvent {
-  TABLE_INIT = "table:init",
   TABLE_ADDED = "table:added",
   TABLE_UPDATED = "table:updated",
   TABLE_ERROR = "table:error",
