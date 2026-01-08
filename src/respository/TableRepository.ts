@@ -7,7 +7,7 @@ export const TableRepository = {
     })
   },
 
-  findAll: () => Table.find({ isActive: true }).populate("section", "sectionName isActive").lean(),
+  findAll: () => Table.find({ isActive: true }).populate("station", "stationNum stationName isActive").lean(),
 }
 
 export default TableRepository

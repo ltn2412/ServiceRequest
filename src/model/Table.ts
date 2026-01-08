@@ -5,14 +5,14 @@ const { ObjectId } = Schema.Types
 export interface ITable extends Document {
   _id: Types.ObjectId
   tableNum: number
-  section: Types.ObjectId | IStation
+  station: Types.ObjectId | IStation
   isActive: boolean
 }
 
 const tableSchema = new Schema<ITable>(
   {
     tableNum: { type: Number, required: true, unique: true },
-    section: { type: ObjectId, ref: "Station", required: true },
+    station: { type: ObjectId, ref: "Station", required: true },
     isActive: { type: Boolean, default: true },
   },
   { timestamps: true, optimisticConcurrency: true }

@@ -35,7 +35,7 @@ const TableService = {
         filter: { tableNum: item.tableNum },
         update: {
           $set: {
-            ...(item.sectionNum !== undefined && { sectionNum: item.sectionNum }),
+            ...(item.stationNum !== undefined && { stationNum: item.stationNum }),
             ...(item.isActive !== undefined && { isActive: item.isActive }),
           },
         },

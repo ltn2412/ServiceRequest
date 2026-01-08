@@ -10,7 +10,7 @@ export enum TableStatus {
 export interface ITableRequest extends Document {
   _id: Types.ObjectId
   tableNum: number
-  sectionNum: number
+  stationNum: number
   tableStatus?: TableStatus | null
   requestCount: number
 }
@@ -18,7 +18,7 @@ export interface ITableRequest extends Document {
 const tableRequestSchema = new Schema<ITableRequest>(
   {
     tableNum: { type: Number, required: true, unique: true },
-    sectionNum: { type: Number, required: true },
+    stationNum: { type: Number, required: true },
     tableStatus: { type: String, enum: Object.values(TableStatus) },
     requestCount: { type: Number, default: 1 },
   },

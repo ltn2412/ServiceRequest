@@ -4,7 +4,9 @@ import http from "http"
 import { Server } from "socket.io"
 import { GlobalErrorMiddleware } from "./middleware/GlobalErrorMiddleware"
 import { RequestLoggerMiddleware } from "./middleware/RequestLoggerMiddleware"
-
+import { StationController } from "./controller/StationController"
+import { TableController } from "./controller/TableController"
+import { TableRequestController } from "./controller/TableRequestController"
 import connectDB from "./respository/AppDB"
 import TableRequestService from "./service/TableRequestService"
 
@@ -33,6 +35,10 @@ io.on("connection", async socket => {
     io.emit("table:updated", table)
   })
 })
+
+app.use("/api/v1/station", StationController)
+app.use("/api/v1/table-request", TableRequestController)
+app.use("/api/v1/table", TableController)
 
 app.use(GlobalErrorMiddleware)
 

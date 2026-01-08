@@ -20,7 +20,7 @@ const TableRequestService = {
 
     await TableRequest.create({
       tableNum: request.tableNum,
-      sectionNum: request.sectionNum,
+      stationNum: request.stationNum,
       isCompleted: false,
     })
   },
@@ -39,7 +39,7 @@ const TableRequestService = {
       },
       {
         $set: {
-          ...(request.sectionNum !== undefined && { sectionNum: request.sectionNum }),
+          ...(request.stationNum !== undefined && { stationNum: request.stationNum }),
           ...(request.tableStatus !== undefined && { tableStatus: request.tableStatus }),
           ...(request.isCompleted !== undefined && { isCompleted: request.isCompleted }),
         },
