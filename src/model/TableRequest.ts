@@ -12,6 +12,7 @@ export interface ITableRequest extends Document {
   tableNum: number
   stationNum: number
   tableStatus?: TableStatus | null
+  isCompleted: boolean
   requestCount: number
 }
 
@@ -20,6 +21,7 @@ const tableRequestSchema = new Schema<ITableRequest>(
     tableNum: { type: Number, required: true, unique: true },
     stationNum: { type: Number, required: true },
     tableStatus: { type: String, enum: Object.values(TableStatus) },
+    isCompleted: { type: Boolean, default: false },
     requestCount: { type: Number, default: 1 },
   },
   { timestamps: true, optimisticConcurrency: true }
