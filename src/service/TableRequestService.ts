@@ -9,21 +9,30 @@ const TableRequestService = {
   getAllTableRequests: async () => await TableRequestRepository.findAll(),
 
   createTableRequest: async (request: CreateTableRequest) => {
-    const { tableNum } = request
+    const { tableNum, stationNum } = request
 
-    const table = await TableRepository.findByTableNums([tableNum])
-    if (table.length === 0) throw new AppError(ErrorCode.NOT_EXIST, `Table ${tableNum} not found`)
-    if (table[0].isActive === false) throw new AppError(ErrorCode.NOT_EXIST, `Table ${tableNum} not active or not found`)
+    const tables = await TableRepository.findByTableNums([tableNum])
 
-    const existedRequest = await TableRequestRepository.findNotCompletedByTableNum(tableNum)
+    if (tables.length === 0) throw new AppError(ErrorCode.NOT_FOUND, `Table ${tableNum} not found`)
 
-    if (existedRequest.length > 0) throw new AppError(ErrorCode.EXIST, `Table request already exists for table ${tableNum}`)
+    if (!tables[0].isActive) throw new AppError(ErrorCode.INACTIVE, `Table ${tableNum} inactive`)
 
-    return await TableRequest.create({
-      tableNum: request.tableNum,
-      stationNum: request.stationNum,
-      isCompleted: false,
-    })
+    const existed = await TableRequestRepository.findNotCompletedByTableNum(tableNum)
+
+    if (existed.length > 0) {
+      const updated = await TableRequest.findOneAndUpdate(
+        {
+          tableNum,
+          isCompleted: false,
+        },
+        { $inc: { requestCount: 1 } },
+        { new: true }
+      )
+
+      return { isCreated: false, data: updated }
+    }
+
+    return { isCreated: true, data: await TableRequest.create({ tableNum, stationNum }) }
   },
 
   updateTableRequest: async (request: UpdateTableRequest) => {

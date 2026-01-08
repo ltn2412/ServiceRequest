@@ -9,10 +9,10 @@ const Controller = {
     const parsed = CreateTableRequest.safeParse(req.body)
     if (!parsed.success) return ValidationErrorResponse(res, parsed.error)
 
-    const newTableRequest = await TableRequestService.createTableRequest(parsed.data)
-    emitSocket(SocketEvent.TABLE_ADDED, newTableRequest)
+    const { isCreated, data } = await TableRequestService.createTableRequest(parsed.data)
+    emitSocket(isCreated ? SocketEvent.REQUEST_ADDED : SocketEvent.REQUEST_UPDATED, data)
 
-    SuccessResponse(res, newTableRequest)
+    SuccessResponse(res, data)
   },
 
   updateTableRequest: async (req: Request, res: Response) => {
@@ -20,7 +20,7 @@ const Controller = {
     if (!parsed.success) return ValidationErrorResponse(res, parsed.error)
 
     const updatedTableRequest = await TableRequestService.updateTableRequest(parsed.data)
-    emitSocket(SocketEvent.TABLE_UPDATED, updatedTableRequest)
+    emitSocket(SocketEvent.REQUEST_UPDATED, updatedTableRequest)
 
     SuccessResponse(res, updatedTableRequest)
   },

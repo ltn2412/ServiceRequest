@@ -4,7 +4,7 @@ import TableService from "@/service/TableService"
 import { Request, Response, Router } from "express"
 
 const Controller = {
-  CreateTable: async (req: Request, res: Response) => {
+  createTable: async (req: Request, res: Response) => {
     const parsed = CreateListTable.safeParse(req.body)
     if (!parsed.success) return ValidationErrorResponse(res, parsed.error)
 
@@ -22,6 +22,6 @@ const Controller = {
 }
 
 export const TableController = Router()
-TableController.post("/", Controller.CreateTable)
+TableController.post("/", Controller.createTable)
 TableController.put("/", Controller.updateTable)
 TableController.get("/", Controller.getAllTables)
