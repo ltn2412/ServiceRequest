@@ -2,15 +2,15 @@
   "name": "service-request",
   "version": "1.0.0",
   "description": "Service Request",
-  "main": "index.js",
+  "main": "server.ts",
   "scripts": {
-    "dev": "bun --watch src/index.ts",
-    "start": "bun run src/index.ts",
+    "dev": "bun --watch src/server.ts",
+    "start": "bun run src/server.ts",
     "swagger": "ts-node src/swagger.ts",
-    "pm2": "pm2 start src/index.ts --interpreter C:\\\\Users\\\\Administrator\\\\.bun\\\\bin\\\\bun.exe --name serviceRequest",
-    "logs": "pm2 logs serviceRequest",
-    "restart": "pm2 restart serviceRequest",
-    "stop": "pm2 stop serviceRequest"
+    "pm2": "pm2 start src/server.ts --interpreter \"C:\\\\Users\\\\Administrator\\\\.bun\\\\bin\\\\bun.exe\" --name %npm_package_name%",
+    "log": "pm2 log %npm_package_name%",
+    "restart": "pm2 restart %npm_package_name%",
+    "stop": "pm2 stop %npm_package_name%"
   },
   "keywords": [],
   "author": "",
