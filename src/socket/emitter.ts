@@ -13,7 +13,7 @@ export function emitSocket<T>(event: SocketEvent, payload: T): void {
     return
   }
 
-  appLoggerSocket(`Emitting socket event: ${event}`)
+  appLoggerSocket(`Emitting socket event: ${event}: ${JSON.stringify(payload)}`)
 
   io.emit(event, payload)
 }
