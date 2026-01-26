@@ -28,11 +28,11 @@ const Controller = {
   changeStationRequest: async (req: Request, res: Response) => {
     const parsed = ChangeStationRequest.safeParse(req.body)
     if (!parsed.success) return ValidationErrorResponse(res, parsed.error)
+
     const updatedTableRequest = await TableRequestService.changeStationRequest(parsed.data)
-    emitSocket(SocketEvent.REQUEST_CHANGE_STATION, {
-      ...updatedTableRequest,
-      oldStationNum: parsed.data.stationNum,
-    })
+
+    emitSocket(SocketEvent.REQUEST_CHANGE_STATION, updatedTableRequest)
+
     SuccessResponse(res, updatedTableRequest)
   },
 

@@ -73,18 +73,23 @@ const TableRequestService = {
     if (!station) throw new AppError(ErrorCode.NOT_FOUND, `Station ${stationNum} not found`)
     if (!station.isActive) throw new AppError(ErrorCode.INACTIVE, `Station ${stationNum} inactive`)
 
-    const existed = await TableRequestRepository.findNotCompletedByTableNum(tableNum)
-    if (existed.length === 0) throw new AppError(ErrorCode.NOT_FOUND, `Table request not found for table ${tableNum}`)
+    const existed = await TableRequest.findOne({
+      tableNum,
+      isCompleted: false,
+    })
+    if (!existed) throw new AppError(ErrorCode.NOT_FOUND, `Table request not found for table ${tableNum}`)
 
-    const updated = await TableRequest.findOneAndUpdate(
-      { tableNum, isCompleted: false },
-      {
-        $set: { stationNum: station.stationNum },
-      },
-      { new: true }
-    )
+    if (existed.stationNum === station.stationNum) throw new AppError(ErrorCode.BAD_REQUEST, `Table ${tableNum} is already assigned to station ${stationNum}`)
 
-    return updated
+    const oldStationNum = existed.stationNum
+
+    existed.stationNum = station.stationNum
+    await existed.save()
+
+    return {
+      ...existed.toObject(),
+      oldStationNum,
+    }
   },
 
   updateCompleteRequest: async (request: UpdateCompleteRequest) => {
