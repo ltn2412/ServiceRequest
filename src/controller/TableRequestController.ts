@@ -1,5 +1,5 @@
 import { SuccessResponse, ValidationErrorResponse } from "@/common/APIResponse"
-import { CreateTableRequest, UpdateTableRequest, UpdateTableRequestStation } from "@/dto/TableRequestDTO"
+import { CreateTableRequest, UpdateCompleteRequest, UpdateTableRequest } from "@/dto/TableRequestDTO"
 import TableRequestService from "@/service/TableRequestService"
 import { emitSocket, SocketEvent } from "@/socket/emitter"
 import { Request, Response, Router } from "express"
@@ -25,21 +25,27 @@ const Controller = {
     SuccessResponse(res, updatedTableRequest)
   },
 
-  updateTableRequestStation: async (req: Request, res: Response) => {
-    const parsed = UpdateTableRequestStation.safeParse(req.body)
+  updateCompleteRequest: async (req: Request, res: Response) => {
+    const parsed = UpdateCompleteRequest.safeParse(req.body)
     if (!parsed.success) return ValidationErrorResponse(res, parsed.error)
 
-    const updatedTableRequest = await TableRequestService.updateTableRequestStation(parsed.data)
+    const updatedTableRequest = await TableRequestService.updateCompleteRequest(parsed.data)
     emitSocket(SocketEvent.REQUEST_UPDATED, updatedTableRequest)
 
     SuccessResponse(res, updatedTableRequest)
   },
 
-  getAllTableRequests: async (_: Request, res: Response) => SuccessResponse(res, await TableRequestService.getAllTableRequests()),
+  getTableRequests: async (req: Request, res: Response) => {
+    const { stationNum } = req.query
+
+    const data = stationNum ? await TableRequestService.getAllTableRequestsByStationNum(Number(stationNum)) : await TableRequestService.getAllTableRequests()
+
+    return SuccessResponse(res, data)
+  },
 }
 
 export const TableRequestController = Router()
 TableRequestController.post("/", Controller.createTableRequest)
 TableRequestController.put("/", Controller.updateTableRequest)
-TableRequestController.put("/station", Controller.updateTableRequestStation)
-TableRequestController.get("/", Controller.getAllTableRequests)
+TableRequestController.put("/complete", Controller.updateCompleteRequest)
+TableRequestController.get("/", Controller.getTableRequests)

@@ -13,9 +13,8 @@ export const UpdateTableRequest = z.object({
 })
 export type UpdateTableRequest = z.infer<typeof UpdateTableRequest>
 
-//* UPDATE STATION
-export const UpdateTableRequestStation = z.object({
+//* UPDATE COMPLETE REQUEST
+export const UpdateCompleteRequest = z.object({
   tableNum: z.number().min(1, "Table number is required"),
-  stationNum: z.number().min(1, "Station number is required"),
 })
-export type UpdateTableRequestStation = z.infer<typeof UpdateTableRequestStation>
+export type UpdateCompleteRequest = z.infer<typeof UpdateCompleteRequest>

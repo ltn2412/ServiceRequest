@@ -9,6 +9,8 @@ export const TableRequestRepository = {
   },
 
   findAll: () => TableRequest.find().lean(),
+
+  findByStationNum: (stationNum: number) => TableRequest.find({ stationNum: stationNum }).lean(),
 }
 
 export default TableRequestRepository
