@@ -8,8 +8,8 @@ export type CreateTableRequest = z.infer<typeof CreateTableRequest>
 //* UPDATE
 export const UpdateTableRequest = z.object({
   tableNum: z.number().min(1, "Table number is required"),
+  stationNum: z.number().optional(),
   tableStatus: z.enum(TableStatus).optional(),
-  isCompleted: z.boolean().optional(),
 })
 export type UpdateTableRequest = z.infer<typeof UpdateTableRequest>
 

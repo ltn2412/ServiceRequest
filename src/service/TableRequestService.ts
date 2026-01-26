@@ -38,35 +38,34 @@ const TableRequestService = {
   },
 
   updateTableRequest: async (request: UpdateTableRequest) => {
-    const { tableNum, tableStatus, isCompleted } = request
+    const { tableNum, tableStatus, stationNum } = request
 
     const tables = await TableRepository.findByTableNums([tableNum])
     if (tables.length === 0) throw new AppError(ErrorCode.NOT_FOUND, `Table ${tableNum} not found`)
     if (!tables[0].isActive) throw new AppError(ErrorCode.INACTIVE, `Table ${tableNum} inactive`)
 
-    const station = await StationRepository.findById(tables[0].station as Types.ObjectId)
-    if (!station) throw new AppError(ErrorCode.NOT_FOUND, `Station for table ${tableNum} not found`)
-    if (!station.isActive) throw new AppError(ErrorCode.INACTIVE, `Station for table ${tableNum} inactive`)
+    if (stationNum !== undefined) {
+      const station = await StationRepository.findByStationNum(stationNum)
+      if (!station) throw new AppError(ErrorCode.NOT_FOUND, `Station ${stationNum} not found`)
+      if (!station.isActive) throw new AppError(ErrorCode.INACTIVE, `Station ${stationNum} inactive`)
+    }
 
     const existed = await TableRequestRepository.findNotCompletedByTableNum(tableNum)
     if (existed.length === 0) throw new AppError(ErrorCode.NOT_FOUND, `Table request not found for table ${tableNum}`)
 
-    type TableRequestUpdateQuery = UpdateQuery<{
+    const updateQuery: UpdateQuery<{
       stationNum?: number
       tableStatus?: TableStatus[]
       isCompleted?: boolean
-    }>
-
-    const updateQuery: TableRequestUpdateQuery = {
+    }> = {
       $set: {
-        stationNum: station.stationNum,
-        ...(isCompleted !== undefined && { isCompleted }),
+        ...(stationNum !== undefined && { stationNum }),
       },
     }
 
     if (tableStatus) {
       updateQuery.$addToSet = {
-        tableStatus: tableStatus,
+        tableStatus,
       }
     }
 
