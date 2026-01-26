@@ -10,7 +10,7 @@ export const TableRequestRepository = {
 
   findAll: () => TableRequest.find().lean(),
 
-  findByStationNum: (stationNum: number) => TableRequest.find({ stationNum: stationNum }).lean(),
+  findByStationNum: (stationNum: number) => TableRequest.find({ stationNum: stationNum, isCompleted: false }).lean(),
 }
 
 export default TableRequestRepository
