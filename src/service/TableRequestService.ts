@@ -49,7 +49,6 @@ const TableRequestService = {
     if (!station.isActive) throw new AppError(ErrorCode.INACTIVE, `Station for table ${tableNum} inactive`)
 
     const existed = await TableRequestRepository.findNotCompletedByTableNum(tableNum)
-
     if (existed.length === 0) throw new AppError(ErrorCode.NOT_FOUND, `Table request not found for table ${tableNum}`)
 
     type TableRequestUpdateQuery = UpdateQuery<{
@@ -65,9 +64,9 @@ const TableRequestService = {
       },
     }
 
-    if (tableStatus && tableStatus.length > 0) {
+    if (tableStatus) {
       updateQuery.$addToSet = {
-        tableStatus: { $each: tableStatus },
+        tableStatus: tableStatus,
       }
     }
 
