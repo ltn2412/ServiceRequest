@@ -21,5 +21,6 @@ export function emitSocket<T>(event: SocketEvent, payload: T): void {
 export enum SocketEvent {
   REQUEST_ADDED = "request:added",
   REQUEST_UPDATED = "request:updated",
+  REQUEST_CHANGE_STATION = "request:change_station",
   REQUEST_ERROR = "request:error",
 }

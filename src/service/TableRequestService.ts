@@ -1,6 +1,6 @@
 import { AppError } from "@/common/AppError"
 import { ErrorCode } from "@/common/ErrorCode"
-import { CreateTableRequest, UpdateCompleteRequest, UpdateTableRequest } from "@/dto/TableRequestDTO"
+import { ChangeStationRequest, CreateTableRequest, UpdateCompleteRequest, UpdateTableRequest } from "@/dto/TableRequestDTO"
 import TableRequest, { TableStatus } from "@/model/TableRequest"
 import StationRepository from "@/respository/StationRepository"
 import TableRepository from "@/respository/TableRepository"
@@ -38,30 +38,18 @@ const TableRequestService = {
   },
 
   updateTableRequest: async (request: UpdateTableRequest) => {
-    const { tableNum, tableStatus, stationNum } = request
+    const { tableNum, tableStatus } = request
 
     const tables = await TableRepository.findByTableNums([tableNum])
     if (tables.length === 0) throw new AppError(ErrorCode.NOT_FOUND, `Table ${tableNum} not found`)
     if (!tables[0].isActive) throw new AppError(ErrorCode.INACTIVE, `Table ${tableNum} inactive`)
 
-    if (stationNum !== undefined) {
-      const station = await StationRepository.findByStationNum(stationNum)
-      if (!station) throw new AppError(ErrorCode.NOT_FOUND, `Station ${stationNum} not found`)
-      if (!station.isActive) throw new AppError(ErrorCode.INACTIVE, `Station ${stationNum} inactive`)
-    }
-
     const existed = await TableRequestRepository.findNotCompletedByTableNum(tableNum)
     if (existed.length === 0) throw new AppError(ErrorCode.NOT_FOUND, `Table request not found for table ${tableNum}`)
 
     const updateQuery: UpdateQuery<{
-      stationNum?: number
       tableStatus?: TableStatus[]
-      isCompleted?: boolean
-    }> = {
-      $set: {
-        ...(stationNum !== undefined && { stationNum }),
-      },
-    }
+    }> = {}
 
     if (tableStatus) {
       updateQuery.$addToSet = {
@@ -70,6 +58,31 @@ const TableRequestService = {
     }
 
     const updated = await TableRequest.findOneAndUpdate({ tableNum, isCompleted: false }, updateQuery, { new: true })
+
+    return updated
+  },
+
+  changeStationRequest: async (request: ChangeStationRequest) => {
+    const { tableNum, stationNum } = request
+
+    const tables = await TableRepository.findByTableNums([tableNum])
+    if (tables.length === 0) throw new AppError(ErrorCode.NOT_FOUND, `Table ${tableNum} not found`)
+    if (!tables[0].isActive) throw new AppError(ErrorCode.INACTIVE, `Table ${tableNum} inactive`)
+
+    const station = await StationRepository.findByStationNum(stationNum)
+    if (!station) throw new AppError(ErrorCode.NOT_FOUND, `Station ${stationNum} not found`)
+    if (!station.isActive) throw new AppError(ErrorCode.INACTIVE, `Station ${stationNum} inactive`)
+
+    const existed = await TableRequestRepository.findNotCompletedByTableNum(tableNum)
+    if (existed.length === 0) throw new AppError(ErrorCode.NOT_FOUND, `Table request not found for table ${tableNum}`)
+
+    const updated = await TableRequest.findOneAndUpdate(
+      { tableNum, isCompleted: false },
+      {
+        $set: { stationNum: station.stationNum },
+      },
+      { new: true }
+    )
 
     return updated
   },
