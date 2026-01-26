@@ -47,5 +47,5 @@ const Controller = {
 export const TableRequestController = Router()
 TableRequestController.post("/", Controller.createTableRequest)
 TableRequestController.put("/", Controller.updateTableRequest)
-TableRequestController.put("/complete", Controller.updateCompleteRequest)
+TableRequestController.post("/complete", Controller.updateCompleteRequest)
 TableRequestController.get("/", Controller.getTableRequests)
