@@ -108,9 +108,7 @@ const TableRequestService = {
     return updated
   },
 
-  getAllTableRequests: async () => await TableRequestRepository.findAll(),
-
-  getAllTableRequestsByStationNum: async (stationNum: number) => await TableRequestRepository.findByStationNum(stationNum),
+  getAllTableRequests: async (filter: { stationNum?: number; isCompleted?: boolean }) => TableRequestRepository.find(filter),
 }
 
 export default TableRequestService

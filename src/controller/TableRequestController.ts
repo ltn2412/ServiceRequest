@@ -47,9 +47,12 @@ const Controller = {
   },
 
   getTableRequests: async (req: Request, res: Response) => {
-    const { stationNum } = req.query
+    const { stationNum, isCompleted } = req.query
 
-    const data = stationNum ? await TableRequestService.getAllTableRequestsByStationNum(Number(stationNum)) : await TableRequestService.getAllTableRequests()
+    const data = await TableRequestService.getAllTableRequests({
+      stationNum: stationNum ? Number(stationNum) : undefined,
+      isCompleted: isCompleted !== undefined ? isCompleted === "true" : undefined,
+    })
 
     return SuccessResponse(res, data)
   },
