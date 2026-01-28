@@ -1,6 +1,6 @@
 import { AppError } from "@/common/AppError"
 import { ErrorCode } from "@/common/ErrorCode"
-import { CreateStation, UpdateStation } from "@/dto/StationDTO"
+import { CreateStation, UpdateListStation } from "@/dto/StationDTO"
 import Station from "@/model/Station"
 import StationRepository from "@/respository/StationRepository"
 
@@ -12,24 +12,33 @@ const StationService = {
     return await Station.create(request)
   },
 
-  updateStation: async (request: UpdateStation) => {
-    const { stationNum, stationName, isActive } = request
+  updateListStation: async (requests: UpdateListStation) => {
+    if (!requests.length) return []
 
-    const updated = await Station.findOneAndUpdate(
-      { stationNum: stationNum },
-      {
-        $set: {
-          ...(stationName !== undefined && { stationName }),
-          ...(isActive !== undefined && { isActive }),
+    const operations = requests.map(item => {
+      const { stationNum, stationName, isActive } = item
+
+      return {
+        updateOne: {
+          filter: { stationNum },
+          update: {
+            $set: {
+              ...(stationName !== undefined && { stationName }),
+              ...(isActive !== undefined && { isActive }),
+            },
+          },
         },
-      },
-      { new: true }
-    )
+      }
+    })
 
-    if (!updated) throw new AppError(ErrorCode.NOT_FOUND, `Station ${request.stationNum} does not exist`)
+    const result = await Station.bulkWrite(operations)
 
-    return updated
+    if (result.matchedCount === 0) throw new AppError(ErrorCode.NOT_FOUND, "No stations were updated")
+
+    const stationNums = requests.map(i => i.stationNum)
+    return Station.find({ stationNum: { $in: stationNums } }).sort({ stationNum: 1 })
   },
+
   getAllStations: async () => await StationRepository.findAll(),
 }
 

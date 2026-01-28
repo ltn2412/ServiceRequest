@@ -13,5 +13,7 @@ export const UpdateStation = z.object({
   stationName: z.string().optional(),
   isActive: z.boolean().optional(),
 })
-
 export type UpdateStation = z.infer<typeof UpdateStation>
+
+export const UpdateListStation = z.array(UpdateStation)
+export type UpdateListStation = z.infer<typeof UpdateListStation>
