@@ -1,14 +1,14 @@
 import { AppError } from "@/common/AppError"
 import { ErrorCode } from "@/common/ErrorCode"
-import { ChangeStationRequest, CreateTableRequest, UpdateCompleteRequest, UpdateTableRequest } from "@/dto/TableRequestDTO"
-import TableRequest, { TableStatus } from "@/model/TableRequest"
+import { ChangeStationRequest, CreateServiceRequest, UpdateCompleteRequest, UpdateServiceRequest } from "@/dto/TableRequestDTO"
+import TableRequest, { ServiceStatus } from "@/model/TableRequest"
 import StationRepository from "@/respository/StationRepository"
 import TableRepository from "@/respository/TableRepository"
 import TableRequestRepository from "@/respository/TableRequestRepository"
 import { Types, UpdateQuery } from "mongoose"
 
-const TableRequestService = {
-  createTableRequest: async (request: CreateTableRequest) => {
+const ServiceRequestService = {
+  createServiceRequest: async (request: CreateServiceRequest) => {
     const { tableNum } = request
 
     const tables = await TableRepository.findByTableNums([tableNum])
@@ -37,8 +37,8 @@ const TableRequestService = {
     }
   },
 
-  updateTableRequest: async (request: UpdateTableRequest) => {
-    const { tableNum, tableStatus } = request
+  updateServiceRequest: async (request: UpdateServiceRequest) => {
+    const { tableNum, serviceStatus } = request
 
     const tables = await TableRepository.findByTableNums([tableNum])
     if (tables.length === 0) throw new AppError(ErrorCode.NOT_FOUND, `Table ${tableNum} not found`)
@@ -48,12 +48,12 @@ const TableRequestService = {
     if (existed.length === 0) throw new AppError(ErrorCode.NOT_FOUND, `Table request not found for table ${tableNum}`)
 
     const updateQuery: UpdateQuery<{
-      tableStatus?: TableStatus[]
+      serviceStatus?: ServiceStatus[]
     }> = {}
 
-    if (tableStatus) {
+    if (serviceStatus) {
       updateQuery.$addToSet = {
-        tableStatus,
+        serviceStatus,
       }
     }
 
@@ -108,7 +108,7 @@ const TableRequestService = {
     return updated
   },
 
-  getAllTableRequests: async (filter: { stationNum?: number; isCompleted?: boolean }) => TableRequestRepository.find(filter),
+  getAllServiceRequests: async (filter: { stationNum?: number; isCompleted?: boolean }) => TableRequestRepository.find(filter),
 }
 
-export default TableRequestService
+export default ServiceRequestService

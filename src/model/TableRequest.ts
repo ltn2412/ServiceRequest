@@ -1,6 +1,6 @@
 import mongoose, { Document, Schema, Types } from "mongoose"
 
-export enum TableStatus {
+export enum ServiceStatus {
   ORDER = "ORDER",
   PAYMENT = "PAYMENT",
   CLEAN = "CLEAN",
@@ -10,7 +10,7 @@ export interface ITableRequest extends Document {
   _id: Types.ObjectId
   tableNum: number
   stationNum: number
-  tableStatus: TableStatus[]
+  serviceStatus: ServiceStatus[]
   isCompleted: boolean
   requestCount: number
 }
@@ -19,9 +19,9 @@ const tableRequestSchema = new Schema<ITableRequest>(
   {
     tableNum: { type: Number, required: true },
     stationNum: { type: Number, required: true },
-    tableStatus: {
+    serviceStatus: {
       type: [String],
-      enum: Object.values(TableStatus),
+      enum: Object.values(ServiceStatus),
       default: [],
     },
     isCompleted: { type: Boolean, default: false },

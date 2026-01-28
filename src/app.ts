@@ -13,7 +13,7 @@ app.use(express.json())
 app.use(RequestLoggerMiddleware)
 
 app.use("/api/v1/station", StationController)
-app.use("/api/v1/table-request", TableRequestController)
+app.use("/api/v1/service-request", TableRequestController)
 app.use("/api/v1/table", TableController)
 
 app.use(GlobalErrorMiddleware)

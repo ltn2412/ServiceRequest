@@ -1,25 +1,25 @@
 import { SuccessResponse, ValidationErrorResponse } from "@/common/APIResponse"
-import { ChangeStationRequest, CreateTableRequest, UpdateCompleteRequest, UpdateTableRequest } from "@/dto/TableRequestDTO"
-import TableRequestService from "@/service/TableRequestService"
+import { ChangeStationRequest, CreateServiceRequest, UpdateCompleteRequest, UpdateServiceRequest } from "@/dto/TableRequestDTO"
+import TableRequestService from "@/service/ServiceRequestService"
 import { emitSocket, SocketEvent } from "@/socket/emitter"
 import { Request, Response, Router } from "express"
 
 const Controller = {
-  createTableRequest: async (req: Request, res: Response) => {
-    const parsed = CreateTableRequest.safeParse(req.body)
+  createServiceRequest: async (req: Request, res: Response) => {
+    const parsed = CreateServiceRequest.safeParse(req.body)
     if (!parsed.success) return ValidationErrorResponse(res, parsed.error)
 
-    const { isCreated, data } = await TableRequestService.createTableRequest(parsed.data)
+    const { isCreated, data } = await TableRequestService.createServiceRequest(parsed.data)
     emitSocket(isCreated ? SocketEvent.REQUEST_ADDED : SocketEvent.REQUEST_UPDATED, data)
 
     SuccessResponse(res, data)
   },
 
-  updateTableRequest: async (req: Request, res: Response) => {
-    const parsed = UpdateTableRequest.safeParse(req.body)
+  updateServiceRequest: async (req: Request, res: Response) => {
+    const parsed = UpdateServiceRequest.safeParse(req.body)
     if (!parsed.success) return ValidationErrorResponse(res, parsed.error)
 
-    const updatedTableRequest = await TableRequestService.updateTableRequest(parsed.data)
+    const updatedTableRequest = await TableRequestService.updateServiceRequest(parsed.data)
     emitSocket(SocketEvent.REQUEST_UPDATED, updatedTableRequest)
 
     SuccessResponse(res, updatedTableRequest)
@@ -46,10 +46,10 @@ const Controller = {
     SuccessResponse(res, updatedTableRequest)
   },
 
-  getTableRequests: async (req: Request, res: Response) => {
+  getServiceRequests: async (req: Request, res: Response) => {
     const { stationNum, isCompleted } = req.query
 
-    const data = await TableRequestService.getAllTableRequests({
+    const data = await TableRequestService.getAllServiceRequests({
       stationNum: stationNum ? Number(stationNum) : undefined,
       isCompleted: isCompleted !== undefined ? isCompleted === "true" : undefined,
     })
@@ -59,8 +59,8 @@ const Controller = {
 }
 
 export const TableRequestController = Router()
-TableRequestController.post("/", Controller.createTableRequest)
-TableRequestController.put("/", Controller.updateTableRequest)
+TableRequestController.post("/", Controller.createServiceRequest)
+TableRequestController.put("/", Controller.updateServiceRequest)
 TableRequestController.post("/change", Controller.changeStationRequest)
 TableRequestController.post("/complete", Controller.updateCompleteRequest)
-TableRequestController.get("/", Controller.getTableRequests)
+TableRequestController.get("/", Controller.getServiceRequests)
