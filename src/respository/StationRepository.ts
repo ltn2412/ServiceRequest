@@ -14,7 +14,7 @@ export const StationRepository = {
 
   findById: (id: Types.ObjectId) => Station.findOne({ _id: id }),
 
-  findAll: () => Station.find({ isActive: true }).lean(),
+  findAll: () => Station.find().lean(),
 }
 
 export default StationRepository
