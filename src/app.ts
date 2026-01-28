@@ -2,7 +2,7 @@ import cors from "cors"
 import express from "express"
 import { StationController } from "./controller/StationController"
 import { TableController } from "./controller/TableController"
-import { TableRequestController } from "./controller/TableRequestController"
+import { TableRequestController } from "./controller/ServiceRequestController"
 import { GlobalErrorMiddleware } from "./middleware/GlobalErrorMiddleware"
 import { RequestLoggerMiddleware } from "./middleware/RequestLoggerMiddleware"
 

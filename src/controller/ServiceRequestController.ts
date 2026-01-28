@@ -1,5 +1,5 @@
 import { SuccessResponse, ValidationErrorResponse } from "@/common/APIResponse"
-import { ChangeStationRequest, CreateServiceRequest, UpdateCompleteRequest, UpdateServiceRequest } from "@/dto/TableRequestDTO"
+import { ChangeStationRequest, CreateServiceRequest, UpdateCompleteRequest, UpdateServiceRequest } from "@/dto/ServiceRequestDTO"
 import TableRequestService from "@/service/ServiceRequestService"
 import { emitSocket, SocketEvent } from "@/socket/emitter"
 import { Request, Response, Router } from "express"
@@ -41,7 +41,7 @@ const Controller = {
     if (!parsed.success) return ValidationErrorResponse(res, parsed.error)
 
     const updatedTableRequest = await TableRequestService.updateCompleteRequest(parsed.data)
-    emitSocket(SocketEvent.REQUEST_UPDATED, updatedTableRequest)
+    emitSocket(SocketEvent.REQUEST_COMPLETED, updatedTableRequest)
 
     SuccessResponse(res, updatedTableRequest)
   },

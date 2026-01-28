@@ -1,10 +1,10 @@
 import { AppError } from "@/common/AppError"
 import { ErrorCode } from "@/common/ErrorCode"
-import { ChangeStationRequest, CreateServiceRequest, UpdateCompleteRequest, UpdateServiceRequest } from "@/dto/TableRequestDTO"
-import TableRequest, { ServiceStatus } from "@/model/TableRequest"
+import { ChangeStationRequest, CreateServiceRequest, UpdateCompleteRequest, UpdateServiceRequest } from "@/dto/ServiceRequestDTO"
+import TableRequest, { ServiceStatus } from "@/model/ServiceRequest"
 import StationRepository from "@/respository/StationRepository"
 import TableRepository from "@/respository/TableRepository"
-import TableRequestRepository from "@/respository/TableRequestRepository"
+import TableRequestRepository from "@/respository/ServiceRequestRepository"
 import { Types, UpdateQuery } from "mongoose"
 
 const ServiceRequestService = {

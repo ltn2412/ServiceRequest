@@ -1,4 +1,4 @@
-import TableRequest from "@/model/TableRequest"
+import TableRequest from "@/model/ServiceRequest"
 
 type TableRequestQuery = Partial<{
   stationNum: number

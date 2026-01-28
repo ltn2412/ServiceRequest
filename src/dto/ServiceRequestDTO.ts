@@ -1,4 +1,4 @@
-import { ServiceStatus } from "@/model/TableRequest"
+import { ServiceStatus } from "@/model/ServiceRequest"
 import z from "zod"
 
 //* CREATE

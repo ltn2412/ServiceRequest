@@ -22,5 +22,6 @@ export enum SocketEvent {
   REQUEST_ADDED = "request:added",
   REQUEST_UPDATED = "request:updated",
   REQUEST_CHANGE_STATION = "request:change_station",
+  REQUEST_COMPLETED = "request:completed",
   REQUEST_ERROR = "request:error",
 }
